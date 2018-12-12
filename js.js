@@ -20,7 +20,6 @@ let Game = {
     ticker: 0,
     objs: {
         menu: 2,
-        play: 0,
         gameOver: 2
     },
     mode: "menu",
@@ -91,7 +90,7 @@ function touchEnd(e) {
         Game.tapEnd.y = e.changedTouches[0].clientY;
         ball.playerInput(Game.tapStart, Game.tapEnd);
     } else if (Game.mode == 2 && gameOverScreen.allReady == true) {
-        window.location.reload();
+        window.location.reload(false);
     }
 };
 	
