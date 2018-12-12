@@ -89,7 +89,7 @@ function touchEnd(e) {
         Game.tapEnd.x = e.changedTouches[0].clientX;
         Game.tapEnd.y = e.changedTouches[0].clientY;
         ball.playerInput(Game.tapStart, Game.tapEnd);
-    } else if (Game.mode == 2 && gameOverScreen.allReady == true) {
+    } else if (Game.mode == "game over") {
         window.location.reload(false);
     }
 };
