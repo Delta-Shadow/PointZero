@@ -12,6 +12,7 @@ let Ball = (() => {
 	let color = "#7a306c";
 	let v = {x: 0, y: -12};
 	let g = {x: 0, y: 0.2};
+        let ticker = 0; // For controlling particles
         // Description of Animations for this obj
         let anime = {
             queue: [],
@@ -51,6 +52,7 @@ let Ball = (() => {
             // Collided with Spikes
             GSM.postMsg("main", "Player Dead");
             GSM.postMsg("sfx", {name: "shake", intensity: 10});
+            GSM.postMsg("particles", {name: "particle", type: "explosion", x: x, y: y});
         } else {
             // Updating normal Physics
             v.x += g.x;
@@ -61,6 +63,11 @@ let Ball = (() => {
 
         // Sending Ball's Coords to Gems so it can check for collision
         GSM.postMsg("gem", {name: "Player Coords", x: x, y: y});
+        // Producing Trail Particles
+        if (ticker % 10 == 0) {
+            GSM.postMsg("particles", {name: "particle", type: "trail", x: x, y: y, v: {x: -v.x, y: -v.y}, g: {x: 0, y: 0}});
+        }
+        ticker++;
     }
 
     let draw = () => {

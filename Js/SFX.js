@@ -206,3 +206,98 @@ let Radial = (m_x, m_y, m_type) => {
     }
 
 };
+
+// Particle System does not come under the general VFX system
+let Particles = () => {
+
+    GSM.registerMe("particles", (data) => {
+        if (data.name == "particle") {
+            spawn(data.type, data.x, data.y, data.v, data.g);
+        }
+    });
+
+    let listOfParticles = [];
+
+    let spawn = (type, x, y, v, g) => { // v and g are not required for Explosion type Particles
+        if (type == "trail") {
+            listOfParticles.push(Particle("trail", x, y, {x: v.x, y: v.y}, {x: 0, y: 0})); // g.x = 0 and g.y = 0 for Trail type Particles
+        }
+        if (type == "explosion") {
+            for (var i = 0; i <= 20; i++) {
+                listOfParticles.push(Particle(
+                    "explosion", 
+                    x, 
+                    y, 
+                    {x: Math.floor(Math.random()*5)-3, y: -(Math.floor(Math.random()*12)+4)}, 
+                    {x: 0, y: 0.2}
+                ));
+            };
+        }
+    }
+
+    let run = () => {
+        for (let i in listOfParticles) {
+            if (!listOfParticles[i].shouldBeKilled()) {
+                listOfParticles[i].run();
+            } else {
+                listOfParticles.splice(i, 1);
+                i--;
+            }
+        }
+    }
+
+    return {
+        run: run
+    }
+
+}
+
+let Particle = (m_type, m_x, m_y, m_v, m_g) => {
+    let type = m_type;
+    let x = m_x; let y = m_y; let v = m_v; let g = m_g;
+    let countDownToDeath = 30; // This is no. of frames after which to kill a Trail type Particle
+    let counter = 0;
+    let w = 12; let h = 12;
+    let color = "#7a306c";
+
+    let update = () => {
+        v.x += g.x;
+        v.y += g.y;
+        x += v.x;
+        y += v.y;
+        counter++;
+    }
+
+    let draw = () => {
+	ctx.fillStyle = color;
+	ctx.fillRect(x, y, w, h);
+    }
+
+    let isOutOfScreen = () => {
+        if (this.x < -20 || this.x > 620 || this.y > 820 || this.y < -200) {
+            return true;
+	} else {
+            return false;
+	}
+    }
+
+    let shouldBeKilled = () => {
+        if (type == "trail") { // Death of Trail type Particles is time bound
+            if (counter >= countDownToDeath) { return true };
+        } else if (type == "explosion") { // Death of Explosion type Particles is position bound
+            return isOutOfScreen();
+        }
+        return false;
+    }
+
+    let run = () => {
+        update();
+        draw();
+    }
+
+    return {
+        run: run,
+        shouldBeKilled: shouldBeKilled
+    }
+
+}

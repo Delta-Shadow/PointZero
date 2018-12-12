@@ -111,6 +111,7 @@ let g_subtitle = g_Subtitle();
 
 // All SFX objs...
 let sfx = SFX();
+let particles = Particles();
 
 // All Game related Objs...
 let spikes = Spikes();
@@ -130,6 +131,7 @@ function main() { // Main Game Loop
     spikes.run();
     score.run();
     sfx.run();
+    particles.run();
 
     if (Game.mode == "menu") {
         title.run();
